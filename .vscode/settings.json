@@ -1,3 +1,10 @@
 {
-  "cSpell.words": ["isize", "println", "usize"]
+  "cSpell.words": ["isize", "println", "usize"],
+  "[markdown]": {
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": true
+    }
+  }
 }

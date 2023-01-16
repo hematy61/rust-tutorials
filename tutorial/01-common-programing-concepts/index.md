@@ -32,6 +32,17 @@ go back to [Table of Content](./../index.md)
     - [Parameters](#parameters)
     - [Statements and Expressions](#statements-and-expressions)
     - [Return Values](#return-values)
+  - [Comments](#comments)
+  - [Control Flow](#control-flow)
+    - [`if` Expressions](#if-expressions)
+    - [`else if` Expressions](#else-if-expressions)
+    - [`if` in a `let` Statement](#if-in-a-let-statement)
+    - [Repetition with Loops](#repetition-with-loops)
+      - [`loop`](#loop)
+      - [Returning Values from `Loop`](#returning-values-from-loop)
+      - [Loop Labels](#loop-labels)
+      - [`while` loops](#while-loops)
+      - [`for` loops](#for-loops)
 
 <!-- /code_chunk_output -->
 
@@ -275,7 +286,7 @@ let heart_eyed_cat = '😻';
     - Note that we specify `char` literals with single quotes, as opposed to `string` literals, which use double quotes.
     - Rust’s `char` type is <u>four bytes in size</u> and represents a **Unicode Scalar Value**, which means it can represent a lot more than just ASCII. Accented letters; Chinese, Japanese, and Korean characters; emoji; and zero-width spaces are all valid `char` values in Rust.
 
-#### Compound Types
+### Compound Types
 
 Compound types can group multiple values into one type. Rust has two primitive compound types: 
 
@@ -390,7 +401,7 @@ The lines execute in the order in which they appear in the `main` function. Firs
 
 ### Parameters
 
-parameters, are special variables that are part of a function’s signature. In function signatures, you must declare the type of each parameter. 
+Parameters are special variables that are part of a function’s signature. In function signatures, you must declare the type of each parameter. 
 
 ```rust
 fn main() {
@@ -413,7 +424,7 @@ fn main() {
 }
 ```
 
-Creating a variable and assigning a value to it with the let keyword is a statement. `let y = 6;` is a statement. Function definitions are also statements like `main` function. **Remember, statements do not return values.**
+Creating a variable and assigning a value to it with the `let` keyword is a statement. `let y = 6;` is a statement. Function definitions are also statements like `main` function. <u>Remember, statements do not return values.</u>
 
 Expressions evaluate to a value like a math operation, such as 5 + 6, which is an expression that evaluates to the value 11. Expressions can be part of statements. For example, 
 
@@ -476,4 +487,219 @@ fn plus_one(x: i32) -> i32 {
 }
 ```
 
-if we place a semicolon at the end of the line containing x + 1, changing it from an expression to a statement, we’ll get a `mismatched types` error. The definition of the function `plus_one` says that it will return an `i32`, but statements don’t evaluate to a value, which is expressed by `()`, the unit type. 
+if we place a semicolon at the end of the line containing `x + 1`, changing it from an expression to a statement, we’ll get a `mismatched types` error. The definition of the function `plus_one` says that it will return an `i32`, but statements don’t evaluate to a value, which is expressed by `()`, the unit type. 
+
+## Comments
+
+In Rust, the idiomatic comment style starts a comment with two slashes `//`, and the comment continues until the end of the line. 
+
+```rust
+// So we’re doing something complicated here, long enough that we need
+// multiple lines of comments to do it! Whew! Hopefully, this comment will
+// explain what’s going on.
+```
+
+Documentation comments use three slashes `///`, instead of two and support Markdown notation for formatting the text.
+
+```rust
+/// Adds one to the number given.
+///
+/// # Examples
+///
+/// ```
+/// let arg = 5;
+/// let answer = my_crate::add_one(arg);
+///
+/// assert_eq!(6, answer);
+/// ```
+pub fn add_one(x: i32) -> i32 {
+  x + 1
+}
+```
+
+## Control Flow
+
+The ability to run some code depending on whether a condition is true and to run some code repeatedly while a condition is true are basic building blocks in most programming languages. The most common constructs that let you control the flow of execution of Rust code are `if` expressions and loops.
+
+### `if` Expressions
+
+
+```rust
+fn main() {
+    let number = 3;
+
+    if number < 5 {
+        println!("condition was true");
+    } else {
+        println!("condition was false");
+    }
+
+     if number {
+        println!("number was three");
+    }
+}
+```
+
+It’s also worth noting that **the condition in this code must be a bool**. If the condition isn’t a bool, we’ll get an error. For example, try running the following code, compiler with throws a `mismatched types` error.
+
+```rust
+let number = 3
+if number {
+    println!("number exist!!!");
+}
+```
+
+### `else if` Expressions
+
+```rust
+let number = 6;
+
+if number % 4 == 0 {
+  println!("number is divisible by 4");
+} else if number % 3 == 0 {
+  println!("number is divisible by 3");
+} else if number % 2 == 0 {
+  println!("number is divisible by 2");
+} else {
+  println!("number is not divisible by 4, 3, or 2");
+}
+```
+
+### `if` in a `let` Statement
+
+Because if is an expression, we can use it on the right side of a let statement to assign the outcome to a variable.
+
+```rust
+let condition = true;
+let number = if condition { 5 } else { 6 };
+
+println!("The value of number is: {number}");
+```
+
+The values that have the potential to be results from each arm of the if must be the same type. Therefore, the following throws an error saying: `if` and `else` have incompatible types
+
+```rust
+let number = if condition { 5 } else { 'a' };
+```
+
+### Repetition with Loops
+
+Rust has three kinds of loops: 
+
+- `loop`
+- `while`
+- `for`
+
+!!!
+    - The `break` keyword within the loop tells the program when to stop executing the loop.
+    - The `continue` keyword, in a loop tells the program to skip over any remaining code in this iteration of the loop and go to the next iteration.
+
+#### `loop`
+
+The `loop` keyword tells Rust to execute a block of code over and over again forever or until you explicitly tell it to stop.
+
+```rust
+loop {
+  println!("again!");
+}
+```
+
+When we run this program, we’ll see `again!` printed over and over continuously until we stop the program manually. 
+
+#### Returning Values from `Loop`
+
+One of the uses of a `loop` is to retry an operation you know might fail, such as checking whether a thread has completed its job. You might also need to pass the result of that operation out of the `loop` to the rest of your code. To do this, you can add the value you want returned after the `break` expression you use to stop the loop; that value will be returned out of the `loop` so you can use it, as shown here:
+
+```rust
+fn main() {
+  let mut counter = 0;
+
+  let result = loop {
+    counter += 1;
+
+    if counter == 10 {
+        break counter * 2;
+    }
+  };
+
+  println!("The result is {result}");
+}
+```
+
+#### Loop Labels
+
+If you have loops within loops, `break` and `continue` apply to the innermost `loop` at that point. You can optionally specify a `loop` label on a `loop` that you can then use with `break` or `continue` to specify that those keywords apply to the labeled `loop` instead of the innermost `loop`. <u>`Loop` labels must begin with a single quote</u>. Here’s an example with two nested loops:
+
+```rust
+fn main() {
+  let mut count = 0;
+  'counting_up: loop {
+    println!("count = {count}");
+    let mut remaining = 10;
+
+    loop {
+      println!("remaining = {remaining}");
+      if remaining == 9 {
+          break;
+      }
+      if count == 2 {
+          break 'counting_up;
+      }
+      remaining -= 1;
+    }
+
+    count += 1;
+  }
+  println!("End count = {count}");
+}
+```
+
+The first break that doesn’t specify a label will exit the inner `loop` only. The break `'counting_up`; statement will exit the outer `loop`.
+
+#### `while` loops
+
+```rust
+let mut number = 3;
+
+while number != 0 {
+  println!("{number}!");
+
+  number -= 1;
+}
+
+println!("LIFTOFF!!!");
+```
+
+#### `for` loops
+
+You can choose to use the while construct to loop over the elements of a collection, such as an array.
+
+```rust
+let a = [10, 20, 30, 40, 50];
+
+for element in a {
+  println!("the value is: {element}");
+}
+```
+
+!!!
+    it's possible to iterate over collections with `while` loops, but `while` loops are slower that `for` loops, as the compiler adds runtime code to perform the conditional check of whether the index is within the bounds of the array on every iteration through the loop.
+
+If you need to iterate n times, you can use built in `Range`, provided by the standard library, which generates all numbers in sequence.
+
+```rust
+for number in (1..4).rev() {
+  println!("{number}!");
+}
+println!("LIFTOFF!!!");
+// 3!
+// 2!
+// 1!
+// LIFTOFF!!!
+```
+
+Number 1 is inclusive and 4 is exclusive.
+
+## Ownership
+
+Ownership is a set of rules that govern how a Rust program manages memory.
